@@ -194,7 +194,14 @@ $timestamp = time();
          .admin-login-text a:hover {
              text-decoration: none;
          }
-
+@media (max-width: 600px) {
+  /* Estilos para móviles */
+  body {
+    font-size: 16px;
+    padding: 10px;
+  }
+  /* Ajusta otros elementos según lo necesites */
+}
 
          /* Estilos para navegación (repetidos para claridad, pero deberías tenerlos en un archivo CSS separado o en el head) */
          header {
