@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner con Diapositivas de Imágenes y Pop-up (Archivo Único con Tailwind)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0; /* Elimina el margen predeterminado del body */
+            font-family: sans-serif; /* Fuente más común y legible en móviles */
+        }
+
+        .banner {
+            width: 100%; /* Usar un poco más de ancho en móviles puede ser mejor */
+            height=50%;
+max-width: 100x; /* Limita el ancho máximo en pantallas grandes */
+            margin: 50px auto;
+            padding: 0; /* No padding para que la imagen ocupe todo el espacio del banner */
+            border: 2px solid black; /* Bordes negros */
+            text-align: center;
+            cursor: pointer; /* Indica que es clickable */
+            background-color: #f0f0f0;
+            box-sizing: border-box; /* Asegura que padding y border no aumenten el ancho total */
+            overflow: hidden; /* Oculta cualquier parte de la imagen que se desborde */
+            position: relative; /* Necesario si quieres superponer texto o elementos */
+        }
+
+        .banner img {
+            display: block; /* Elimina espacio extra debajo de la imagen */
+            width: 110%; /* La imagen ocupa todo el ancho del contenedor .banner */
+            height: 120%; /* Mantiene la relación de aspecto */
+        }
+
+        /* Estilos para el pop-up */
+        .popup-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Fondo semi-transparente más oscuro */
+            display: none; /* Inicialmente oculto */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Asegura que esté por encima de otros elementos */
+            overflow-y: auto; /* Permite scroll si el contenido del pop-up es largo */
+            -webkit-overflow-scrolling: touch; /* Mejora el scroll en iOS */
+        }
+
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px; /* Bordes un poco más redondeados */
+            position: relative;
+            max-width: 90%; /* Usar un porcentaje para el ancho máximo en móviles */
+            width: 1024px; /* Ancho preferido en pantallas medianas */
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para destacar */
+            margin: 20px; /* Margen para que no toque los bordes de la pantalla pequeña */
+            box-sizing: border-box; /* Asegura que padding y border no aumenten el ancho total */
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px; /* Tamaño del botón un poco más grande para facilitar el toque */
+            font-weight: bold;
+            color: #aaa; /* Color gris suave */
+            cursor: pointer;
+            padding: 5px; /* Área de toque más grande */
+        }
+
+        .close-button:hover {
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="banner" id="myBanner">
+        <img id="bannerImage" src="https://placehold.co/600x200/FF5733/FFFFFF?text=Imagen+1" alt="Banner Rotativo">
+    </div>
+
+    <div class="popup-container" id="myPopup">
+        <div class="popup-content">
+            <span class="close-button" id="closePopup">&times;</span>
+            <h3>Título del Pop-up</h3>
+            <p>Este es el contenido detallado que aparece cuando haces clic en el banner. Puedes poner información importante aquí.</p>
+            <p>Este pop-up está diseñado para ser responsivo y funcionar bien en dispositivos móviles como Android.</p>
+        </div>
+    </div>
+
+    <script>
+        // banner_slideshow.js code
+        // Lista de URLs de las 5 imágenes
+        // Puedes reemplazar estas URLs de ejemplo con las URLs de tus propias imágenes
+        const images = [
+            'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.crtecnologicas.com.ve%2Ftienda-online-especializada-en-venta-de-computadoras-en-caracas%2F&psig=AOvVaw0WcVW_VxLe8BgjZrSnYxqi&ust=1746217780292000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCOjmnaeOg40DFQAAAAAdAAAAABAE',
+            'https://www.ventasrosario.com.ar/wp-content/uploads/2024/09/4-4fdcee5ffe94ed034717240891111001-1024-1024.jpg',
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSV66vkexSXaNt92TK8O-K_sebt_NX7wkZknA&s',
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTypHJ3AJcUnfSDU4ERef0UPOVAuZ0JXcJAA&s',
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6K6ILz5uiQcgBq5gKUE-sx2MJUSdvzFThcA&s'
+        ];
+
+        // Índice de la imagen actual
+        let currentImageIndex = 0;
+
+        // Obtener la referencia a la etiqueta de imagen en el banner
+        const bannerImage = document.getElementById('bannerImage');
+
+        // Función para cambiar a la siguiente imagen
+        function changeImage() {
+            // Incrementa el índice
+            currentImageIndex++;
+
+            // Si el índice supera el número de imágenes, vuelve al principio
+            if (currentImageIndex >= images.length) {
+                currentImageIndex = 0;
+            }
+
+            // Cambia la fuente (src) de la imagen
+            bannerImage.src = images[currentImageIndex];
+        }
+
+        // Establecer un intervalo para cambiar la imagen cada 3 segundos (3000 milisegundos)
+        // Puedes ajustar este valor para cambiar la velocidad de la diapositiva
+        const slideshowInterval = setInterval(changeImage, 3000);
+
+        // script.js code
+        const banner = document.getElementById('myBanner');
+        const popup = document.getElementById('myPopup');
+        const closeButton = document.getElementById('closePopup');
+
+        // Función para mostrar el pop-up
+        function showPopup() {
+            popup.style.display = 'flex';
+            // Evita el scroll del body cuando el pop-up está abierto (opcional)
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Función para ocultar el pop-up
+        function hidePopup() {
+            popup.style.display = 'none';
+            // Restaura el scroll del body (opcional)
+            document.body.style.overflow = '';
+        }
+
+        // Evento al hacer clic en el banner para mostrar el pop-up
+        banner.addEventListener('click', showPopup);
+
+        // Evento al hacer clic en la 'x' para ocultar el pop-up
+        closeButton.addEventListener('click', hidePopup);
+
+        // Opcional: Cerrar pop-up cuando se hace clic fuera del contenido
+        window.addEventListener('click', (event) => {
+            if (event.target === popup) {
+                hidePopup();
+            }
+        });
+
+        // Opcional: Cerrar pop-up al presionar la tecla ESC
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && popup.style.display === 'flex') {
+                hidePopup();
+            }
+        });
+    </script>
+
+</body>
+</html>
